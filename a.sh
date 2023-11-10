@@ -3,8 +3,8 @@
 # These should be replaced with your actual values
 # note that it is not good practice to store these here
 # for purposes of this guide it's okay. 
-CHANNEL_ID='-4085016640'
-BOT_TOKEN='6925637055:AAHl89G8nW9ZQ2jVEFROsUYiPSP8LF2MW6o'
+CHANNEL_ID='<CHAT GROUP ID>'
+BOT_TOKEN='<BOT TOKEN>'
 
 # if the first argument is "-h" for help.
 # display the usage information
