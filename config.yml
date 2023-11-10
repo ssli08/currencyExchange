@@ -1,0 +1,13 @@
+# currency rate api
+currency:
+  # http://api.exchangeratesapi.io/v1/latest?access_key=API_KEY
+  apiURL: "http://api.exchangeratesapi.io/v1/latest?access_key"
+  apiKey: "<api key>"
+
+# telegram bot
+telegram:
+  # https://api.telegram.org/bot<token>/METHOD_NAME
+  tgUrl: "https://api.telegram.org/bot" 
+  botToken: "<BOT TOKEN>"
+  # get chatGroupID via login with https://web.telegram.org
+  chatGroupID: "<CHAT GROUP ID>" 
