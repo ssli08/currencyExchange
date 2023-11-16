@@ -2,7 +2,7 @@ package main
 
 import (
 	"currencyExchange/currency"
-	"currencyExchange/im"
+	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -23,9 +23,15 @@ type Config struct {
 func main() {
 	cfg := parseConfig()
 
-	msg := currency.GetCurrencyRates(cfg.CurrencyAPI.ApiURL, cfg.CurrencyAPI.ApiKEY)
+	msg, err := currency.GetCurrencyRates(cfg.CurrencyAPI.ApiURL, cfg.CurrencyAPI.ApiKEY)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	// im.SendMSG(msg)
-	im.SendMSGViaProxy(cfg.TelegramBot.TelegramURL, cfg.TelegramBot.BotToken, cfg.TelegramBot.ChatGroupID, msg)
+	if err := currency.SendMSGViaProxy(cfg.TelegramBot.TelegramURL, cfg.TelegramBot.BotToken, cfg.TelegramBot.ChatGroupID, msg); err != nil {
+		fmt.Println(err)
+	}
 }
 
 func parseConfig() Config {

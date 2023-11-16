@@ -1,10 +1,10 @@
 package currency
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -27,7 +27,7 @@ type rate struct {
 	USD float32 `json:"USD,omitempty"`
 }
 
-func GetCurrencyRates(url, apiKey string) string {
+func GetCurrencyRates(url, apiKey string) (string, error) {
 	/* {
 	    "success": true,
 	    "timestamp": 1519296206,
@@ -47,20 +47,17 @@ func GetCurrencyRates(url, apiKey string) string {
 
 	// currency exchange api url
 	url = fmt.Sprintf("%s=%s", url, apiKey)
-	resp, err := http.Get(url)
+	data, err := HttpProcess(http.MethodGet, url, bytes.NewBuffer(nil))
 	if err != nil {
-		panic(err)
-	}
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	d := body{}
-	if err := json.Unmarshal(data, &d); err != nil {
-		panic(err)
+		return "", fmt.Errorf("get data failed %s", err)
 	}
 
-	return fmt.Sprintf("%v == %f", time.Unix(d.Timestamp, 0), d.Rates.CNY/d.Rates.NZD)
+	d := body{}
+	if err := json.Unmarshal(data, &d); err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%v == %f", time.Unix(d.Timestamp, 0), d.Rates.CNY/d.Rates.NZD), nil
 }
 
 // put token to vault server
