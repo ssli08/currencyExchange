@@ -21,7 +21,6 @@ type resultInfo struct {
 	Result      result `json:"result"`
 }
 
-// use socket proxy(if set in system environment) to send http request
 func SendMSGViaProxy(tgUrl, botToken, chatGroupID, msg string) error {
 	msgURL := tgUrl + botToken + "/sendMessage"
 
@@ -50,7 +49,7 @@ func SendMSGViaProxy(tgUrl, botToken, chatGroupID, msg string) error {
 func HttpProcess(method, accessURL string, payload io.Reader) ([]byte, error) {
 
 	client := http.Client{}
-	// check proxy, if not null use the proxy to access http resource, otherwise directly access.
+	// check proxy settings, if null access http directly, otherwise use proxy to access.
 	proxyServer := checkProxy()
 	if proxyServer != "" {
 		fmt.Printf("use proxy %s to access %s\n", proxyServer, strings.Split(accessURL, "/")[2])
