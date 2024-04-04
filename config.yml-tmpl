@@ -11,3 +11,8 @@ telegram:
   botToken: "<BOT TOKEN>"
   # get chatGroupID via login with https://web.telegram.org
   chatGroupID: "<CHAT GROUP ID>" 
+
+# reference value
+reference:
+  referredMinValue: 4.30
+  referredMaxValue: 4.50

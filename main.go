@@ -4,6 +4,7 @@ import (
 	"currencyExchange/currency"
 	"fmt"
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -18,19 +19,31 @@ type Config struct {
 		BotToken    string `yaml:"botToken"`
 		ChatGroupID string `yaml:"chatGroupID"`
 	} `yaml:"telegram"`
+	ReferenceValue struct {
+		ReferredMinValue float32 `yaml:"referredMinValue"`
+		ReferredMaxValue float32 `yaml:"referredMaxValue"`
+	} `yaml:"reference"`
 }
 
 func main() {
 	cfg := parseConfig()
 
-	msg, err := currency.GetCurrencyRates(cfg.CurrencyAPI.ApiURL, cfg.CurrencyAPI.ApiKEY)
+	data, err := currency.GetCurrencyRates(cfg.CurrencyAPI.ApiURL, cfg.CurrencyAPI.ApiKEY)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	// im.SendMSG(msg)
-	if err := currency.SendMSGViaProxy(cfg.TelegramBot.TelegramURL, cfg.TelegramBot.BotToken, cfg.TelegramBot.ChatGroupID, msg); err != nil {
-		fmt.Println(err)
+	c := data.Rates.CNY / data.Rates.NZD
+	u := data.Rates.NZD / data.Rates.USD
+
+	// if current rate value greater than reference max value or less than reference min value, it'll send message to
+	// telegram channel
+	if c <= cfg.ReferenceValue.ReferredMinValue || c >= cfg.ReferenceValue.ReferredMaxValue {
+		// im.SendMSG(msg)
+		msg := fmt.Sprintf("%v: (RMB/NZD: %f) - (NZD/USD: %f)", time.Unix(data.Timestamp, 0), c, u)
+		if err := currency.SendMSGViaProxy(cfg.TelegramBot.TelegramURL, cfg.TelegramBot.BotToken, cfg.TelegramBot.ChatGroupID, msg); err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 

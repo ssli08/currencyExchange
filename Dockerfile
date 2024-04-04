@@ -15,5 +15,6 @@ WORKDIR /
 COPY --from=build-stage /geek /geek
 COPY --from=build-stage /app/config.yml ./
 # USER nonroot:nonroot
-ENV HTTP_PROXY='socks5://localhost:1080'
-ENTRYPOINT ["/geek" ]
+ENV HTTP_PROXY='socks5://192.168.*.*:1080'
+# ENTRYPOINT ["/geek" ]
+CMD [ "sh","-c","while true;do /geek && sleep 21600;done" ]

@@ -8,12 +8,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	vault "github.com/hashicorp/vault/api"
 )
 
-type body struct {
+type Body struct {
 	Success   bool   `json:"success"`
 	Timestamp int64  `json:"timestamp,omitempty"`
 	Base      string `json:"base"`
@@ -27,7 +26,8 @@ type rate struct {
 	USD float32 `json:"USD,omitempty"`
 }
 
-func GetCurrencyRates(url, apiKey string) (string, error) {
+// get value of CNY/NZD and USD/NZD
+func GetCurrencyRates(url, apiKey string) (Body, error) {
 	/* {
 	    "success": true,
 	    "timestamp": 1519296206,
@@ -49,15 +49,16 @@ func GetCurrencyRates(url, apiKey string) (string, error) {
 	url = fmt.Sprintf("%s=%s", url, apiKey)
 	data, err := HttpProcess(http.MethodGet, url, bytes.NewBuffer(nil))
 	if err != nil {
-		return "", fmt.Errorf("get data failed %s", err)
+		return Body{}, fmt.Errorf("get data failed %s", err)
 	}
 
-	d := body{}
+	d := Body{}
 	if err := json.Unmarshal(data, &d); err != nil {
-		return "", err
+		return Body{}, err
 	}
 
-	return fmt.Sprintf("%v == %f", time.Unix(d.Timestamp, 0), d.Rates.CNY/d.Rates.NZD), nil
+	// return fmt.Sprintf("%v == %f(USD/NZD: %f)", time.Unix(d.Timestamp, 0), d.Rates.CNY/d.Rates.NZD, d.Rates.USD/d.Rates.NZD), nil
+	return d, nil
 }
 
 // put token to vault server
