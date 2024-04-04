@@ -36,7 +36,7 @@ func main() {
 	c := data.Rates.CNY / data.Rates.NZD
 	u := data.Rates.NZD / data.Rates.USD
 
-	// if current rate value greater than reference max value or less than reference min value, it'll send message to
+	// if current rate value greater than referredMaxValue or less than referredMinValue, it'll send message to
 	// telegram channel
 	if c <= cfg.ReferenceValue.ReferredMinValue || c >= cfg.ReferenceValue.ReferredMaxValue {
 		// im.SendMSG(msg)
